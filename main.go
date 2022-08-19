@@ -1,21 +1,16 @@
 package main
 
 import (
-	"image"
-	_ "image/gif"
-	_ "image/jpeg"
-	_ "image/png"
 	"io"
 	"log"
+	"net/http"
 	"os"
 	"path/filepath"
-
-	_ "golang.org/x/image/bmp"
-	_ "golang.org/x/image/tiff"
+	"strings"
 )
 
 func main() {
-	// カレントディレクトリ配下のディレクトリ取得
+	// カレントディレクトリ配下の画像ファイルの拡張子修正
 	pwd, err := os.Getwd()
 	if err != nil {
 		logf(err)
@@ -25,7 +20,6 @@ func main() {
 	if err != nil {
 		logf(err)
 	}
-
 }
 
 func walkFn() filepath.WalkFunc {
@@ -62,19 +56,25 @@ func getImgExt(path string) string {
 	}
 	defer f.Close()
 
-	_, format, err := image.DecodeConfig(f)
-	// 画像以外は無視
-	if format == "" {
+	buffer := make([]byte, 512)
+	f.Read(buffer)
+	contentType := http.DetectContentType(buffer)
+
+	switch contentType {
+	case "image/jpeg":
+		return ".jpg"
+	case "image/gif":
+		return ".gif"
+	case "image/bmp":
+		return ".bmp"
+	case "image/png":
+		return ".png"
+	default:
+		if strings.HasPrefix(contentType, "image/") {
+			logg(path + ": " + contentType)
+		}
 		return ""
 	}
-	if err != nil {
-		logf(err)
-	}
-
-	if format == "jpeg" {
-		format = "jpg"
-	}
-	return "." + format
 }
 
 func logf(m interface{}) {
