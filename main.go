@@ -69,6 +69,8 @@ func getImgExt(path string) string {
 		return ".bmp"
 	case "image/png":
 		return ".png"
+	case "image/webp":
+		return ".webp"
 	default:
 		if strings.HasPrefix(contentType, "image/") {
 			logg(path + ": " + contentType)
