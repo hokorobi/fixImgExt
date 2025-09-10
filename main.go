@@ -79,11 +79,11 @@ func getImgExt(path string) string {
 	}
 }
 
-func logf(m interface{}) {
+func logf(m any) {
 	logg(m)
 	os.Exit(1)
 }
-func logg(m interface{}) {
+func logg(m any) {
 	f, err := os.OpenFile(getFilename(".log"), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if err != nil {
 		panic("Cannot open log file: " + err.Error())
