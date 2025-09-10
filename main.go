@@ -37,10 +37,10 @@ func walkFn() filepath.WalkFunc {
 		}
 
 		newPath := getFullpathWithoutExt(path) + ext
-		err = os.Rename(path, newPath)
+		err2 := os.Rename(path, newPath)
 		logg("Rename: " + path + " to " + newPath)
-		if err != nil {
-			logf(err)
+		if err2 != nil {
+			logf(err2)
 		}
 
 		return nil
